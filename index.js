@@ -55,7 +55,11 @@ const displayPlants = (plants) => {
        <p>$<span class="font-bold text-2xl">${plant.price}</span></p>
      </div>
     </div>
-     <button class="bg-[#15803D] btn btn-block rounded-3xl"><span class="text-[#FFFFFF] font-bold text-lg py-3">Add to cart</span></button>
+   <button onclick='addToCart(${JSON.stringify(plant)})' 
+  class="bg-[#15803D] btn btn-block rounded-3xl">
+  <span class="text-[#FFFFFF] font-bold text-lg py-3">Add to cart</span>
+</button>
+
   </div>
 </div>
 
@@ -130,6 +134,52 @@ loadPlants();
 loadCategories();
 
 
+// ---------------- CART SYSTEM ----------------
+
+let cart = [];
+
+// Add item to cart
+function addToCart(product) {
+  let existing = cart.find(item => item.id === product.id);
+
+  if (existing) {
+    existing.quantity += 1;
+  } else {
+    cart.push({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: 1
+    });
+  }
+
+  updateCartUI();
+}
+
+// Update Cart UI
+function updateCartUI() {
+  const cartContainer = document.getElementById("cart-items");
+  const totalDisplay = document.getElementById("cart-total");
+
+  cartContainer.innerHTML = "";
+  let total = 0;
+
+  cart.forEach(item => {
+    total += item.price * item.quantity;
+
+    const div = document.createElement("div");
+    div.className = "flex justify-between bg-white p-3 rounded-lg shadow mb-2";
+
+    div.innerHTML = `
+      <span>${item.name} (x${item.quantity})</span>
+      <span>${item.price * item.quantity} BDT</span>
+    `;
+
+    cartContainer.appendChild(div);
+  });
+
+  totalDisplay.innerText = total;
+}
 
 
 
